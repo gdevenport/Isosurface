@@ -10,38 +10,61 @@ gt = GeometricTools;
 UJ = vpm.UJ_direct
 zeta = vpm.zeta_direct
 
-h = 10.0                  # Length to probe
-nprobes = 20              # Number of probes per direction
-D = rand(3)               # Random direction
-D ./= norm(D)
-X = rand(3)               # Position of particle
-Gamma = (1/rand())*cross([1,0,0], D) # Vortex strength
-sigma = range(0.05, 0.15, length=10)[ceil(Int, rand()*10)]*h        # Smoothing radius
 
 # Create fluid domain grid
-fdom = gt.Grid([-1,-1,-1],[1,1,1],[6,6,6])
+fdom = gt.Grid([-5,-5,-5],[5,5,5],[11,11,11])
 
+# Read in the particle field
+file = h5open("/media/flowlab/Storage/gdevenport/simulations/turbine_validation20/sim_pfield.5.h5","r");
+
+# We now extract the various groups, Gamma, X, sigma, etc.
+group_gamma = file["Gamma"];
+group_X = file["X"];
+group_Sigma = file["sigma"];
+
+# We now extract the data from the various groups.
+Gamma = read(group_gamma);
+X = read(group_X);
+Sigma = read(group_Sigma);
+
+# Calculate the length of the data set
+lengthGamma = size(Gamma)[2];
+lengthX = size(X)[2];
+lengthSigma = size(Sigma)[1];
+println(lengthGamma,"\t\t", lengthX, "\t\t", lengthSigma)
+
+Xpoints = X[1,:];
+Ypoints = X[2,:];
+Zpoints = X[3,:];
 # Initialize field
-pfield = vpm.ParticleField(fdom.nnodes + 1)
-# Add probes
-for ni in 1:fdom.nnodes
-    Xprobe = gt.get_node(fdom, ni)
-    vpm.add_particle(pfield, Xprobe, 1e-10*ones(3), h/100)
+pfield = vpm.ParticleField(fdom.nnodes + 1 + lengthX)
+
+# Add probes to the particle field at the nodes of the grid.
+for i in 1:fdom.nnodes
+    Xprobe = gt.get_node(fdom, i)
 end
 
-    # Add vortex
-vpm.add_particle(pfield, X, Gamma, sigma)
+# Now add the particles to the particle field with the probes, based on the data read in.
+for i in 1:lengthX
+    vpm.add_particle(pfield, [Xpoints[i],Ypoints[i],Zpoints[i]], Gamma[i], Sigma[i])
+end
 
     # Calculate 𝝎 = ∇×𝐮
 UJ(pfield)
-Us = [vpm.get_U(P) for P in vpm.iterate(pfield)][1:end-1]
-Ws = [vpm.get_W(P) for P in vpm.iterate(pfield)][1:end-1]
+Us = [vpm.get_U(P) for P in vpm.iterate(pfield)][1:fdom.nnodes]
+Ws = [vpm.get_W(P) for P in vpm.iterate(pfield)][1:fdom.nnodes]
+
+zeta(pfield)
+omegaapproxs = [[P.Jexa[1], P.Jexa[2], P.Jexa[3]] for P in vpm.iterate(pfield)][1:fdom.nnodes]
+
 
     # Calculate 𝝎 = ∑𝚪𝑝 𝜁𝜎(𝐱−𝐱𝑝)
-zeta(pfield)
 
     # Save fluid domain
+    
 gt.add_field(fdom, "U", "vector", Us, "node")
 gt.add_field(fdom, "W", "vector", Ws, "node")
-gt.save(fdom,"/media/flowlab/Storage/gdevenport/simulations/pfield/testVTK")    
+gt.add_field(fdom, "omegaapproxs", "vector", omegaapproxs, "node")
+
+gt.save(fdom,"/media/flowlab/Storage/gdevenport/simulations/pfield/testVTK")
 vpm.save(pfield,"/media/flowlab/Storage/gdevenport/simulations/pfield/pfield_save_test")
