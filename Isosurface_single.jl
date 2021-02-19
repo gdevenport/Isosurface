@@ -31,10 +31,8 @@ fdom = gt.Grid([-5,-5,-5],[5,5,5],[11,11,11])
 
 """
     readh5(file_name, file_path)
-
     Reads in an h5 file and extracts the Gamma, X (x,y,z position), and Sigma data. 
     Returns the extracted data and the number of particles in the h5 file. 
-
     return X, Gamma, Sigma, lengthX
 """
 function readh5(file_name, file_path)
