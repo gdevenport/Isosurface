@@ -3,13 +3,12 @@
 # Date: February 19, 2021
 # This code creates the file necessary for isosurface creation in Para View.
 
-
 using HDF5
 using GeometricTools
 using LinearAlgebra
 using FLOWVPM
 
-vpm=FLOWVPM;
+vpm = FLOWVPM;
 gt = GeometricTools;
 UJ = vpm.UJ_direct
 zeta = vpm.zeta_direct
@@ -17,6 +16,14 @@ zeta = vpm.zeta_direct
 # Define the path and file name of the desired h5 file. 
 path = "/media/flowlab/Storage/gdevenport/simulations/turbine_validation20/";
 name = "sim_pfield.5.h5";
+
+# Define the pfield path and file name for the saved file. 
+p_save_path = "/media/flowlab/Storage/gdevenport/simulations/pfield/";
+p_save_name = "sim_pfield_test"
+
+# Define the vtk path and file name for the saved file. 
+vtk_save_path = "/media/flowlab/Storage/gdevenport/simulations/vtk/";
+vtk_save_name = "vtk_test"
 
 # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
 # The number of nodes for this grid will be (nx+1)*(ny+1)*(nz+1)
@@ -35,18 +42,20 @@ function readh5(file_name, file_path)
 
     # We now extract the various groups, Gamma, X, sigma and extract the data from the various groups.
     # file["Gamma"] extracts the group Gamma. The read command reads in the data as an array. 
-    Gamma = read(file["Gamma"]);
-    X = read(file["X"]);
-    Sigma = read(file["sigma"]);
+    gamma = read(file["Gamma"]);
+    position = read(file["X"]);
+    sigma = read(file["sigma"]);
 
     # Calculate the length of the data set 
-    lengthX = size(X)[2];
+    len_data = size(position)[2];
 
-    return X, Gamma, Sigma, lengthX
+    return position, gamma, sigma, len_data
 end
 
-# Initialize field
-pfield = vpm.ParticleField(fdom.nnodes + lengthX + 1)
+X, Gamma, Sigma , lengthX = readh5(name, path);
+
+# Initialize particle field. We will add the test probes and the particles from the h5 file.
+pfield = vpm.ParticleField(fdom.nnodes + lengthX + 1);
 
 # Add probes to the particle field at the nodes of the grid.
 # add_particle(pfield, [x,y,z], Gamma, Sigma)
@@ -75,5 +84,5 @@ gt.add_field(fdom, "W", "vector", Ws, "node")
 gt.add_field(fdom, "omegaapproxs", "vector", omegaapproxs, "node")
 
 # Save the grid as a VTK file. 
-gt.save(fdom,"/media/flowlab/Storage/gdevenport/simulations/pfield/testVTK")
-vpm.save(pfield,"/media/flowlab/Storage/gdevenport/simulations/pfield/pfield_save_test")
+gt.save(fdom,"$vtk_save_path$vtk_save_name")
+vpm.save(pfield, p_save_name; path = p_save_path)
