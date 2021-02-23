@@ -13,7 +13,7 @@
     zeta = vpm.zeta_direct
 
     # Define the path and file name of the desired h5 file. 
-    path = "/media/flowlab/Storage/gdevenport/simulations/turbine_validation20/";
+    path = "/media/flowlab/Storage/gdevenport/simulations/turbine_validation20_copy/";
     # File name is provided by the input for the function. 
 
     # Define the pfield path and file name for the saved file. 
@@ -32,7 +32,7 @@ function iso_vtk(name::String, iteration::Int)
 
     # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
     # The number of nodes for this grid will be (nx+1)*(ny+1)*(nz+1)
-    fdom = gt.Grid([-5,-5,-5],[5,5,5],[11,11,11])
+    fdom = gt.Grid([-5,-5,-5],[0.5,5,5],[11,11,11])
 
     """
         readh5(file_name, file_path)
@@ -89,11 +89,11 @@ function iso_vtk(name::String, iteration::Int)
     gt.add_field(fdom, "omegaapproxs", "vector", omegaapproxs, "node")
 
     # Save the grid as a VTK file. 
-    gt.save(fdom,"$vtk_save_path$vtk_save_name$iteration")
+    gt.save(fdom,"$vtk_save_path.$vtk_save_name$iteration")
 
     # The variable 'iteration' pairs the original h5 file number with this output vtk file number so that
     # the output files are kept in the same order as the input files. 
-    vpm.save(pfield, "$p_save_name$iteration"; path = p_save_path)
+    vpm.save(pfield, "$p_save_name.$iteration"; path = p_save_path)
 
 end;
 
@@ -126,5 +126,7 @@ for file in filelist
     # Skip all files not ending in '5' this is designed to only use '.h5' files. 
     if file[end]=='5'
         iso_vtk(file, get_file_number(file))
+        number = get_file_number(file);
+        println("File number $number")
     end
 end
