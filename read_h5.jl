@@ -77,7 +77,7 @@ function buildArray(n)
     return array;
 end
 
-file = h5open("/media/sf_Virtual_Drive/Winter 2021/Wake Visualization/simulations/greg_test_pfield.6.h5","r");
+file = h5open("/media/sf_Virtual_Drive/Winter 2021/Isosurface/Pfield_from_Judd/sim_pfield.10.h5","r");
 
 # We now extract the various groups, Gamma, X, sigma, etc. 
 group_gamma = file["Gamma"];
@@ -103,4 +103,3 @@ function plotstuff()
     zpoints=X[3,:];
     scatter(ypoints,zpoints,xpoints)
 end
-

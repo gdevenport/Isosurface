@@ -14,16 +14,16 @@ UJ = vpm.UJ_direct
 zeta = vpm.zeta_direct
 
 # Define the path and file name of the desired h5 file. 
-path = "/media/flowlab/Storage/gdevenport/simulations/turbine_validation20_copy/";
-name = "sim_pfield.5.h5";
+path = "/media/sf_Virtual_Drive/Winter 2021/Isosurface/Pfield_from_Judd/";
+name = "sim_pfield.2.h5";
 
 # Define the pfield path and file name for the saved file. 
-p_save_path = "/media/flowlab/Storage/gdevenport/simulations/pfield/";
-p_save_name = "sim_pfield_test"
+p_save_path = "/media/sf_Virtual_Drive/Winter 2021/Isosurface/";
+p_save_name = "sim_pfield_vpm_working.2"
 
 # Define the vtk path and file name for the saved file. 
-vtk_save_path = "/media/flowlab/Storage/gdevenport/simulations/vtk/";
-vtk_save_name = "vtk_test"
+vtk_save_path = "/media/sf_Virtual_Drive/Winter 2021/Isosurface/";
+vtk_save_name = "vtk_vpm_working.2"
 
 # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
 # The number of nodes for this grid will be (nx+1)*(ny+1)*(nz+1)
@@ -70,7 +70,7 @@ end
 
     # Calculate 𝝎 = ∇×𝐮
 UJ(pfield)
-Us = [vpm.get_U(P) for P in vpm.iterate(pfield)][1:fdom.nnodes]
+Us = [vpm.get_U(P)+[-20.0, 0.0, 0.0] for P in vpm.iterate(pfield)][1:fdom.nnodes]
 Ws = [vpm.get_W(P) for P in vpm.iterate(pfield)][1:fdom.nnodes]
 
 zeta(pfield)
