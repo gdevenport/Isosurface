@@ -83,11 +83,11 @@ function create_vtk(
 
 
         # Save the grid as a VTK file.
-        gt.save(fdom,"$save_path$vtk_save_name.$file_number")
+        gt.save(fdom,"$save_path$vtk_save_name";num=iteration)
     
         # The variable 'iteration' pairs the original h5 file number with this output vtk file number so that
         # the output files are kept in the same order as the input files.
-        vpm.save(pfield, "$pfield_save_name.$file_number"; path = save_path)
+        # vpm.save(pfield, "$pfield_save_name"; path = save_path,num=iteration) #Turn on if you want pfield to save. 
     
     end;
 
