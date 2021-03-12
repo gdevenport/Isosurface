@@ -19,7 +19,9 @@ zeta = vpm.zeta_direct
 """
 function create_vtk(
     h5file_name::String, 
-    iteration::Int, 
+    iteration::Int,
+    bounds::Array{Array{Float64,1},1},
+    freestream::Array{Float64,1},
     data_path::String,
     save_path::String,
     vtk_save_name::String,
@@ -28,7 +30,7 @@ function create_vtk(
 
     # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
     # The number of nodes for this grid will be (nx+1)*(ny+1)*(nz+1)
-    fdom = gt.Grid([-1,-1,-2],[3,1,2],[15,15,15])
+    fdom = gt.Grid(bounds[1],bounds[2],convert(Array{Int64,1},bounds[3]))
 
     X, Gamma, Sigma , lengthX = readh5(h5file_name, data_path);
 
@@ -57,7 +59,7 @@ function create_vtk(
        
        # Calculate 𝝎 = ∇×𝐮
         UJ(pfield)
-        Us = [vpm.get_U(P)+[-20.0,0.0,0.0] for P in vpm.iterate(pfield)][1:fdom.nnodes]
+        Us = [vpm.get_U(P)+freestream for P in vpm.iterate(pfield)][1:fdom.nnodes]
         Ws = [vpm.get_W(P) for P in vpm.iterate(pfield)][1:fdom.nnodes]
     
         zeta(pfield)
@@ -108,16 +110,18 @@ end
 function create_isosurface(;
     file_start=file_start::Int, 
     file_end=file_end::Int,
+    bounds=bounds::Array{Array{Float64,1},1},
+    freestream=freestream::Array{Float64,1},
     data_path=data_path::String,
     pfield_file_name=pfield_file_name::String,
     save_path=save_path::String,
     vtk_save_name=vtk_save_name::String,
-    pfield_save_name=pfield_save_name::String
+    pfield_save_name=pfield_save_name::String    
     )
 
     for i in file_start:file_end
 
-        create_vtk("$pfield_file_name.$i.h5",i,data_path,save_path,vtk_save_name,pfield_save_name)
+        create_vtk("$pfield_file_name.$i.h5",i,bounds,data_path,save_path,vtk_save_name,pfield_save_name)
         println("Creating Isosurface for file $i")
 
     end
