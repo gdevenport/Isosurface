@@ -74,10 +74,10 @@ function straight_path_isosurface()
     file_end=10;
 
     # Define bounds
-    bounds=[[1.0,1.0,1.0],[2.0,2.0,2.0],[3,3,3]];
+    bounds=[[-5.0,-5.0,-5.0],[0.5,5.0,5.0],[13,13,13]];
 
     # Define freestream
-    freestream = [-20,0,0];
+    freestream = [-20.0,0.0,0.0];
 
     # Data read
     data_path="/media/flowlab/Storage/jmehr/simulations/straight_path_test/";
@@ -100,3 +100,5 @@ function straight_path_isosurface()
         vtk_save_name=vtk_save_name
         ) 
 end
+
+straight_path_isosurface()
