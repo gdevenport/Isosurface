@@ -76,7 +76,7 @@ function straight_path_isosurface()
     file_end=10;
 
     # Define bounds
-    bounds=[[-5.0,-5.0,-5.0],[0.5,5.0,5.0],[13,13,13]];
+    bounds=[[-1.0,-1.0,-1.0],[1.0,1.0,1.0],[20,5,20]];
 
     # Define freestream
     freestream = [-20.0,0.0,0.0];
@@ -86,7 +86,7 @@ function straight_path_isosurface()
     pfield_file_name = "sim_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/straight_path_output";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/straight_path_output/";
     pfield_save_name = "straight_path";
     vtk_save_name = "straight_path";
         
