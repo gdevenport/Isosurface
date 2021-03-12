@@ -1,5 +1,6 @@
 include("Isosurface_multiple.jl")
 
+function local_isosurface()
     # File start and stop
     file_start=9;
     file_end=12;
@@ -31,6 +32,7 @@ include("Isosurface_multiple.jl")
         vtk_save_name=vtk_save_name
         ) 
 
+end
 
 function turbine_validation_isosurface()
 
