@@ -41,10 +41,10 @@ function turbine_validation_isosurface()
     file_end=10;
 
     # Define bounds
-    bounds=[[-10.0,-5.0,-5.0],[0.5,5.0,5.0],[21,1,21]];
+    bounds=[[-10.0,-0.5,-5.0],[0.5,0.5,5.0],[21,3,21]];
 
     # Define freestream
-    freestream = [-20,0,0];
+    freestream = [-20.0,0.0,0.0];
 
     # Data read
     data_path="/media/flowlab/Storage/gdevenport/simulations/turbine_validation20_copy/";
@@ -103,4 +103,4 @@ function straight_path_isosurface()
         ) 
 end
 
-straight_path_isosurface()
+turbine_validation_isosurface()
