@@ -41,7 +41,7 @@ function turbine_validation_isosurface()
     file_end=10;
 
     # Define bounds
-    bounds=[[-5.0,-5.0,-5.0],[0.5,5.0,5.0],[11,11,11]];
+    bounds=[[-10.0,-5.0,-5.0],[0.5,5.0,5.0],[21,1,21]];
 
     # Define freestream
     freestream = [-20,0,0];
@@ -76,7 +76,7 @@ function straight_path_isosurface()
     file_end=10;
 
     # Define bounds
-    bounds=[[-1.0,-1.0,-1.0],[1.0,1.0,1.0],[20,5,20]];
+    bounds=[[-1.0,-1.0,-1.0],[2.0,1.0,1.0],[20,5,20]];
 
     # Define freestream
     freestream = [-20.0,0.0,0.0];
