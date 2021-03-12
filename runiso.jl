@@ -1,15 +1,14 @@
 include("Isosurface_multiple.jl")
 
-function local_isosurface()
     # File start and stop
-    file_start=1;
-    file_end=10;
+    file_start=9;
+    file_end=12;
 
     # Define bounds
     bounds=[[1.0,1.0,1.0],[2.0,2.0,2.0],[3,3,3]];
 
     # Define freestream
-    freestream = [-20,0,0];
+    freestream = [-20.0,0.0,0.0];
 
     # Data read
     data_path="/media/sf_Virtual_Drive/Winter 2021/Wake Visualization/Simulation Visualization Files/";
@@ -31,7 +30,7 @@ function local_isosurface()
         pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name
         ) 
-end
+
 
 function turbine_validation_isosurface()
 
@@ -100,5 +99,4 @@ function straight_path_isosurface()
         pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name
         ) 
-
 end

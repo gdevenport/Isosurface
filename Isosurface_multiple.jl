@@ -71,13 +71,23 @@ function create_vtk(
         gt.add_field(fdom, "W", "vector", Ws, "node")
         gt.add_field(fdom, "omegaapproxs", "vector", omegaapproxs, "node")
     
-    
+        if iteration < 10
+            file_number = "000$iteration";
+        elseif iteration < 100
+            file_number = "00$iteration";
+        elseif iteration < 1000
+            file_number = "0$iteration";
+        else
+            file_number = "$iteration";
+        end
+
+
         # Save the grid as a VTK file.
-        gt.save(fdom,"$save_path$vtk_save_name.$iteration")
+        gt.save(fdom,"$save_path$vtk_save_name.$file_number")
     
         # The variable 'iteration' pairs the original h5 file number with this output vtk file number so that
         # the output files are kept in the same order as the input files.
-        vpm.save(pfield, "$pfield_save_name.$iteration"; path = save_path)
+        vpm.save(pfield, "$pfield_save_name.$file_number"; path = save_path)
     
     end;
 
@@ -120,8 +130,8 @@ function create_isosurface(;
     )
 
     for i in file_start:file_end
-
-        create_vtk("$pfield_file_name.$i.h5",i,bounds,data_path,save_path,vtk_save_name,pfield_save_name)
+        
+        create_vtk("$pfield_file_name.$i.h5",i,bounds,freestream,data_path,save_path,vtk_save_name,pfield_save_name)
         println("Creating Isosurface for file $i")
 
     end
