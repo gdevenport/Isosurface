@@ -103,4 +103,38 @@ function straight_path_isosurface()
         ) 
 end
 
-turbine_validation_isosurface()
+function single_rotor_isosurface()
+
+    # File start and stop
+    file_start=1;
+    file_end=10;
+
+    # Define bounds
+    bounds=[[-0.02,-0.001,-0.15],[0.2,0.001,0.15],[20,5,20]];
+
+    # Define freestream
+    freestream = [0.0,0.0,0.0];
+
+    # Data read
+    data_path="/media/flowlab/Storage/gdevenport/simulations/single_rotor/";
+    pfield_file_name = "singlerotor_pfield"
+
+    # Data write
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/single_rotor_output/";
+    pfield_save_name = "single_rotor";
+    vtk_save_name = "single_rotor";
+        
+    create_isosurface(
+        file_start=file_start,
+        file_end=file_end,
+        bounds=bounds,
+        freestream=freestream,
+        data_path=data_path,
+        pfield_file_name=pfield_file_name,
+        save_path=save_path,
+        pfield_save_name=pfield_save_name,
+        vtk_save_name=vtk_save_name
+        ) 
+end
+
+single_rotor_isosurface()
