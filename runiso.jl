@@ -41,7 +41,11 @@ function turbine_validation_isosurface()
     file_end=10;
 
     # Define bounds
-    bounds=[[-10.0,-0.5,-5.0],[0.5,0.5,5.0],[21,3,21]];
+    
+    # bounds=[[-10.0,-0.5,-5.0],[0.5,0.5,5.0],[21,3,21]];
+
+    bounds=[[-10.0,-5.0,-5.0],[0.5,5.0,5.0],[17,17,17]];
+
 
     # Define freestream
     freestream = [-20.0,0.0,0.0];
@@ -110,7 +114,8 @@ function single_rotor_isosurface()
     file_end=10;
 
     # Define bounds
-    bounds=[[-0.02,-0.001,-0.15],[0.2,0.001,0.15],[20,5,20]];
+    # bounds=[[-0.02,-0.001,-0.15],[0.2,0.001,0.15],[20,5,20]];
+    bounds=[[-0.02,-0.15,-0.15],[0.2,0.15,0.15],[17,17,17]];
 
     # Define freestream
     freestream = [0.0,0.0,0.0];
@@ -136,5 +141,7 @@ function single_rotor_isosurface()
         vtk_save_name=vtk_save_name
         ) 
 end
+
+turbine_validation_isosurface()
 
 single_rotor_isosurface()
