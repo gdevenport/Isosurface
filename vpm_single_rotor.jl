@@ -9,11 +9,11 @@ wingtwist = 0.0         #wing twist
 wingsweep = 10.0        #wing sweep in degrees
 wingdihedral = 7.0      #wing dihedral in degrees
 
-mainwing = vlm.simpleWing(span,aspectratio,taperratio,wingtwist,wingsweep,wingdihedral)
+#mainwing = vlm.simpleWing(span,aspectratio,taperratio,wingtwist,wingsweep,wingdihedral)
 
 system = vlm.WingSystem()
 
-vlm.addwing(system,"mainwing",mainwing)
+#vlm.addwing(system,"mainwing",mainwing)
 
 Vinf(x,t) = [1,0,0]         #non-dimensional function defining free stream velocity
 vlm.setVinf(system, Vinf)   #set freestream velocity for the system
@@ -25,7 +25,7 @@ save_path = "/media/flowlab/Storage/gdevenport/simulations/single_rotor_output" 
 run(`rm -rf $save_path`)        #clear out directory where files will be saved
 run(`mkdir $save_path`)         #re-create directory fresh
 
-vlm.save(system, run_name; path=save_path)  #save geometry in a .vtk file format
+#vlm.save(system, run_name; path=save_path)  #save geometry in a .vtk file format
 
 rotor_file = "apc10x7.csv"
 data_path = uns.def_data_path
@@ -65,7 +65,7 @@ vlm.save(system, run_name; path=save_path)
 
 vlm_system = vlm.WingSystem()
 
-vlm.addwing(vlm_system, "mainwing", mainwing)
+#vlm.addwing(vlm_system, "mainwing", mainwing)
 
 vlm.setVinf(vlm_system, Vinf)   #set freestream velocity for the system
 
@@ -81,13 +81,13 @@ for rotor in rotors; vlm.addwing(wake_system, run_name, rotor); end;
 
 tilting_systems = ();
 
-Vvehicle(t) = [-1.0,0.0,0.0]
+Vvehicle(t) = [0.0,0.0,0.0]
 
 anglevehicle(t) = zeros(3)
 
 angle = ();
 
-RPM_fun(t) = 1.0
+RPM_fun(t) = 10.0
 
 RPM = (RPM_fun, );
 
@@ -100,8 +100,8 @@ vehicle = uns.VLMVehicle(   system;
                             wake_system     = wake_system,
                         );
 Vref = 10.0         #define a reference velocity for the vehicle
-ttot = 1.0          #define a total simulation time, in seconds
-nsteps = 30        #define the number of steps the simulation will take
+ttot = 10.0          #define a total simulation time, in seconds
+nsteps = 200        #define the number of steps the simulation will take
                         
                         #initial conditions
 tinit = 0.0                                  #initial time
@@ -124,4 +124,4 @@ pfield = uns.run_simulation(simulation, nsteps;
                         extra_runtime_function=nullfunc
                                                 )
                                 
-run(`paraview --data="$save_path/$(files);tutorial_pfield...vtk"`)
+#run(`paraview --data="$save_path/$(files);tutorial_pfield...vtk"`)
