@@ -37,27 +37,27 @@ end
 function turbine_validation_isosurface()
 
     # File start and stop
-    file_start=46;
-    file_end=80;
+    file_start=1;
+    file_end=10;
 
     # Define bounds
     
-    bounds=[[-10.0,-0.5,-6.0],[0.5,0.5,6.0],[21,3,21]];
+    # bounds=[[-10.0,-0.5,-5.0],[0.5,0.5,5.0],[21,3,21]];
 
-    #bounds=[[-10.0,-5.0,-5.0],[0.5,5.0,5.0],[17,17,17]];
+    bounds=[[-10.0,-5.0,-5.0],[0.5,5.0,5.0],[17,17,17]];
 
 
     # Define freestream
     freestream = [-20.0,0.0,0.0];
 
     # Data read
-    data_path="/media/flowlab/Storage/gdevenport/simulations/turbine_validation20/";
+    data_path="/media/flowlab/Storage/gdevenport/simulations/turbine_validation20_copy/";
     pfield_file_name = "sim_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/Vorticity_validation/";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/vtk/turbine_output/";
     pfield_save_name = "turbine_validation20";
-    vtk_save_name = "turbine_validation20_highrez";
+    vtk_save_name = "turbine_validation20";
         
     create_isosurface(
         file_start=file_start,
@@ -111,10 +111,10 @@ function single_rotor_isosurface()
 
     # File start and stop
     file_start=1;
-    file_end=40;
+    file_end=80;
 
     # Define bounds
-    bounds=[[-0.2,-0.001,-0.35],[0.4,0.001,0.35],[20,5,20]]; # Added 0.2 to all parameteres except the y components. 
+    bounds=[[-0.02,-0.001,-0.15],[0.2,0.001,0.15],[20,5,20]];
     #bounds=[[-0.02,-0.15,-0.15],[0.2,0.15,0.15],[17,17,17]];
 
     # Define freestream
@@ -125,7 +125,7 @@ function single_rotor_isosurface()
     pfield_file_name = "singlerotor_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/Vorticity_validation/";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/single_rotor_output/";
     pfield_save_name = "single_rotor";
     vtk_save_name = "single_rotor";
         
@@ -142,7 +142,7 @@ function single_rotor_isosurface()
         ) 
 end
 
-function phantom_isosurface()
+function phantom_hover_isosurface()
     # File start and stop
     file_start=1;
     file_end=80;
@@ -182,8 +182,7 @@ function phantom_flight_isosurface()
     file_end=80;
 
     # Define bounds
-    bounds=[[0.0,-0.12,-0.12],[0.25,0.12,0.12],[20,5,20]];
-
+    bounds=[[-0.1,-0.2,-0.2],[0.25,0.2,0.2],[20,5,20]];
     # Define freestream
     freestream = [0.0,0.0,0.0];
 
