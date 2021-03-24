@@ -17,15 +17,15 @@ zeta = vpm.zeta_direct
     Inputs are 'name' which is the name of the h5 file, and 'iteration' which is an integer
     representing the number associated with the h5 file. See get_file_number(). 
 """
-function create_vtk(
-    h5file_name::String, 
-    iteration::Int,
-    bounds::Array{Array{Float64,1},1},
-    freestream::Array{Float64,1},
-    data_path::String,
-    save_path::String,
-    vtk_save_name::String,
-    pfield_save_name::String
+function create_iso(
+    h5file_name, 
+    iteration,
+    bounds,
+    freestream,
+    data_path,
+    save_path,
+    vtk_save_name,
+    pfield_save_name
     )
 
     # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
@@ -53,11 +53,13 @@ function create_vtk(
     # It should be noted that the [x,y,z] data are arranged with x,y,z as rows and the various particles as columns.
 
     for i in 1:lengthX
-        vpm.add_particle(pfield, X[:,i], Gamma[i], Sigma[i])
+        vpm.add_particle(pfield, X[:,i], Gamma[:,i], Sigma[i])
     end
 
        
        # Calculate 𝝎 = ∇×𝐮
+       # Evaluate UJ
+        vpm._reset_particles(pfield)
         UJ(pfield)
         Us = [vpm.get_U(P)+freestream for P in vpm.iterate(pfield)][1:fdom.nnodes]
         Ws = [vpm.get_W(P) for P in vpm.iterate(pfield)][1:fdom.nnodes]
@@ -118,21 +120,21 @@ end
 
 
 function create_isosurface(;
-    file_start=file_start::Int, 
-    file_end=file_end::Int,
-    bounds=bounds::Array{Array{Float64,1},1},
-    freestream=freestream::Array{Float64,1},
-    data_path=data_path::String,
-    pfield_file_name=pfield_file_name::String,
-    save_path=save_path::String,
-    vtk_save_name=vtk_save_name::String,
-    pfield_save_name=pfield_save_name::String    
+    file_start=file_start, 
+    file_end=file_end,
+    bounds=bounds,
+    freestream=freestream,
+    data_path=data_path,
+    pfield_file_name=pfield_file_name,
+    save_path=save_path,
+    vtk_save_name=vtk_save_name,
+    pfield_save_name=pfield_save_name    
     )
 
     for i in file_start:file_end
         
 
-        create_vtk("$pfield_file_name.$i.h5",i,bounds,freestream,data_path,save_path,vtk_save_name,pfield_save_name)
+        create_iso("$pfield_file_name.$i.h5",i,bounds,freestream,data_path,save_path,vtk_save_name,pfield_save_name)
         println("Creating Isosurface for file $i")
 
     end
