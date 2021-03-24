@@ -51,11 +51,11 @@ function turbine_validation_isosurface()
     freestream = [-20.0,0.0,0.0];
 
     # Data read
-    data_path="/media/flowlab/Storage/gdevenport/simulations/turbine_validation20_copy/";
+    data_path="/media/flowlab/Storage/gdevenport/simulations/data/turbine_validation20/";
     pfield_file_name = "sim_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/vtk/turbine_output/";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/turbine validation/";
     pfield_save_name = "turbine_validation20";
     vtk_save_name = "turbine_validation20";
         
@@ -77,7 +77,7 @@ function straight_path_isosurface()
 
     # File start and stop
     file_start=1;
-    file_end=10;
+    file_end=100;
 
     # Define bounds
     bounds=[[-1.0,-1.0,-1.0],[2.0,1.0,1.0],[20,5,20]];
@@ -90,7 +90,7 @@ function straight_path_isosurface()
     pfield_file_name = "sim_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/straight_path_output/";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/straight path/";
     pfield_save_name = "straight_path";
     vtk_save_name = "straight_path";
         
@@ -121,11 +121,11 @@ function single_rotor_isosurface()
     freestream = [0.0,0.0,0.0];
 
     # Data read
-    data_path="/media/flowlab/Storage/gdevenport/simulations/single_rotor/";
+    data_path="/media/flowlab/Storage/gdevenport/simulations/data/single_rotor/";
     pfield_file_name = "singlerotor_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/single_rotor_output/";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/single rotor/";
     pfield_save_name = "single_rotor";
     vtk_save_name = "single_rotor";
         
@@ -154,11 +154,11 @@ function phantom_hover_isosurface()
     freestream = [0.0,0.0,0.0];
 
     # Data read
-    data_path="/media/flowlab/Storage/gdevenport/simulations/phantom_hover/singlerotor_hover_test00/";
+    data_path="/media/flowlab/Storage/gdevenport/simulations/data/phantom/singlerotor_hover_test00/";
     pfield_file_name = "singlerotor_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/Vorticity_validation/";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/phantom hover/";
     pfield_save_name = "phantom";
     vtk_save_name = "phantom";
         
@@ -182,7 +182,7 @@ function phantom_flight_isosurface()
     file_end=80;
 
     # Define bounds
-    bounds=[[-0.1,-0.2,-0.2],[0.25,0.2,0.2],[20,5,20]];
+    bounds=[[-0.1,-0.01,-0.2],[0.25,0.01,0.2],[20,5,20]];
     # Define freestream
     freestream = [0.0,0.0,0.0];
 
@@ -209,4 +209,7 @@ function phantom_flight_isosurface()
 
 end
 
-phantom_flight_isosurface()
+straight_path_isosurface()
+turbine_validation_isosurface()
+phantom_hover_isosurface()
+single_rotor_isosurface()
