@@ -209,7 +209,37 @@ function phantom_flight_isosurface()
 
 end
 
-straight_path_isosurface()
-turbine_validation_isosurface()
-phantom_hover_isosurface()
-single_rotor_isosurface()
+function turbine_24()
+    # File start and stop
+    file_start=71;
+    file_end=71;
+
+    # Define bounds
+    bounds=[[-5,-5,-5],[5,5,5],[20,20,20]];
+    # Define freestream
+    freestream = [0.0,0.0,0.0];
+
+    # Data read
+    data_path="/media/flowlab/Storage/jmehr/simulations/oldform_turbinevalidation_FINAL_GOOD_DONOTDELETE_24/";
+    pfield_file_name = "sim_pfield"
+
+    # Data write
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/turbine 24/";
+    pfield_save_name = "turbine_24";
+    vtk_save_name = "turbine_24";
+        
+    create_isosurface(
+        file_start=file_start,
+        file_end=file_end,
+        bounds=bounds,
+        freestream=freestream,
+        data_path=data_path,
+        pfield_file_name=pfield_file_name,
+        save_path=save_path,
+        pfield_save_name=pfield_save_name,
+        vtk_save_name=vtk_save_name
+        ) 
+
+end
+
+turbine_24()
