@@ -44,15 +44,11 @@ function create_iso(
     fdom = gt.Grid(bounds[1],bounds[2],convert(Array{Int64,1},bounds[3]))
 
     # Print file number code is running on. 
-    if verbose
-        println("Creating Isosurface for file $iteration")
-    end
+    if verbose println("Creating Isosurface for file $iteration") end
 
     X, Gamma, Sigma , lengthX = readh5(h5file_name, data_path);
 
-    if verbose
-        println("Building particle field...number of particles: $lengthX")
-    end
+    if verbose println("Building particle field...number of particles: $lengthX") end
 
 # --------------------------------------------------------Create Particle Field----------------------------------------------------
     # Initialize particle field. We will add the test probes and the particles from the h5 file.
@@ -74,29 +70,20 @@ function create_iso(
  
 # --------------------------------------------------------Calculate Vorticity and Velocity------------------------------------------
        #The pfield must be reset each iteration so that the velocities do not continue to add on top of eachother. 
-    if verbose
-        println("Calculating vorticity and velocity...")
-        println("\t Resetting particle field...")
-    end
+    if verbose println("Calculating vorticity and velocity..."); println("\t Resetting particle field...") end
         
 
     vpm._reset_particles(pfield)
 
-    if verbose
-        println("\t Calculating particle on particle interations...")
-    end
+    if verbose println("\t Calculating particle on particle interations...") end
 
     UJ(pfield)
 
-    if verbose
-        println("\t Calculating velocity...")
-    end
+    if verbose println("\t Calculating velocity...") end
 
     Us = [vpm.get_U(P)+freestream for P in vpm.iterate(pfield)][1:fdom.nnodes]
 
-    if verbose
-        println("\t Calculating vorticity...\n")
-    end
+    if verbose println("\t Calculating vorticity...\n") end
 
     Ws = [vpm.get_W(P) for P in vpm.iterate(pfield)][1:fdom.nnodes]
     
@@ -170,9 +157,10 @@ function iterate_iso(;
     pfield_save_name=pfield_save_name,
     verbose = verbose
     )
-
-    for i in file_start:file_end
-        create_iso("$pfield_file_name.$i.h5",i,bounds,freestream,data_path,save_path,vtk_save_name,pfield_save_name,verbose)
+  # This is for timing purposes
+    @time begin
+        for i in file_start:file_end
+            create_iso("$pfield_file_name.$i.h5",i,bounds,freestream,data_path,save_path,vtk_save_name,pfield_save_name,verbose)
+        end
     end
-
 end
