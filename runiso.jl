@@ -229,7 +229,7 @@ end
 
 function turbine_24()
     # File start and stop
-    file_start=72;
+    file_start=0;
     file_end=72;
 
     # Define bounds
