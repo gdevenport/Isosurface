@@ -229,11 +229,11 @@ end
 
 function turbine_24()
     # File start and stop
-    file_start=0;
+    file_start=72;
     file_end=72;
 
     # Define bounds
-    bounds=[[-20,-7,-7],[1,7,7],[30,30,30]];
+    bounds=[[-40,-7,-7],[1,7,7],[50,30,30]];
     # Define freestream
     freestream = [0.0,0.0,0.0];
 
@@ -243,8 +243,8 @@ function turbine_24()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/turbine 24/";
-    pfield_save_name = "turbine_24";
-    vtk_save_name = "turbine_24";
+    pfield_save_name = "turbine_24_fast";
+    vtk_save_name = "turbine_24_fast";
     
     verbose = true;
 
