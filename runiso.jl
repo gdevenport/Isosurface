@@ -156,11 +156,11 @@ end
 
 function phantom_hover_isosurface()
     # File start and stop
-    file_start=1;
-    file_end=80;
+    file_start=0;
+    file_end=432;
 
     # Define bounds
-    bounds=[[-0.1,-0.2,-0.2],[0.25,0.2,0.2],[20,5,20]];
+    bounds=[[-0.1,-0.0002,-0.2],[0.25,0.0002,0.2],[46,1,46]];
 
     # Define freestream
     freestream = [0.0,0.0,0.0];
@@ -171,8 +171,8 @@ function phantom_hover_isosurface()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/phantom hover/";
-    pfield_save_name = "phantom";
-    vtk_save_name = "phantom";
+    pfield_save_name = "phantom_fast";
+    vtk_save_name = "phantom_fast";
 
     verbose = true;
         
@@ -227,24 +227,24 @@ function phantom_flight_isosurface()
 
 end
 
-function turbine_24()
+function turbine_10()
     # File start and stop
-    file_start=72;
-    file_end=72;
+    file_start=450;
+    file_end=450;
 
     # Define bounds
-    bounds=[[-40,-7,-7],[1,7,7],[50,30,30]];
+    bounds=[[-55,-7,-7],[1,7,7],[50,30,30]];
     # Define freestream
     freestream = [0.0,0.0,0.0];
 
     # Data read
-    data_path="/media/flowlab/Storage/jmehr/simulations/oldform_turbinevalidation_FINAL_GOOD_DONOTDELETE_24/";
+    data_path="/media/flowlab/Storage/jmehr/simulations/oldform_turbinevalidation_FINAL_GOOD_DONOTDELETE_10/";
     pfield_file_name = "sim_pfield"
 
     # Data write
-    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/turbine 24/";
-    pfield_save_name = "turbine_24_fast";
-    vtk_save_name = "turbine_24_fast";
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/turbine 10/";
+    pfield_save_name = "turbine_10_fast";
+    vtk_save_name = "turbine_10_fast";
     
     verbose = true;
 
@@ -263,4 +263,43 @@ function turbine_24()
 
 end
 
-turbine_24()
+
+
+
+function windcraft_pylon()
+    # File start and stop
+    file_start=0;
+    file_end=100;
+
+    # Define bounds
+    bounds=[[-2.0,-2.0,-2.75],[2.0,2.0,2.75],[10,10,10]];
+    # Define freestream
+    freestream = [0.0,0.0,0.0];
+
+    # Data read
+    data_path="/media/flowlab/Storage/jmehr/simulations/4Rotor_straight_path_test_withpylons/";
+    pfield_file_name = "sim_pfield"
+
+    # Data write
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/windcraft_pylons_circle/";
+    pfield_save_name = "deleteme";
+    vtk_save_name = "wind_4_pylon";
+
+    verbose = true;
+
+    iterate_iso(
+        file_start=file_start,
+        file_end=file_end,
+        bounds=bounds,
+        freestream=freestream,
+        data_path=data_path,
+        pfield_file_name=pfield_file_name,
+        save_path=save_path,
+        pfield_save_name=pfield_save_name,
+        vtk_save_name=vtk_save_name,
+        verbose = verbose
+        )
+
+end
+
+windcraft_pylon()
