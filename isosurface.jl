@@ -69,8 +69,8 @@ function create_iso(;
                 z2 = center[3] + r*cos(t*v/r) + z_length/2;
                 y1 = center[2] + r*sin(t*v/r) + y_length/2;
                 y2 = center[2] + r*sin(t*v/r) - y_length/2;
-                x1 = center[1]-x_length/2;
-                x2 = center[1]+x_length/2;
+                x1 = center[1] - x_length/2;
+                x2 = center[1] + x_length/2;
 
                 circle_path_coordinates = [[min(x1,x2),min(y1,y2),min(z1,z2)],[max(x1,x2),max(y1,y2),max(z1,z2)]]
                 
@@ -193,66 +193,6 @@ function readh5(file_name, file_path)
 end
 
 
-function local_isosurface()
-    # File start and stop
-    file_start=9;
-    file_end=12;
-
-    # Define bounds
-
-    # Define freestream
-    freestream = [-20.0,0.0,0.0];
-
-    # Data read
-    data_path="/media/sf_Virtual_Drive/Winter 2021/Wake Visualization/Simulation Visualization Files/";
-    pfield_file_name = "greg_test_pfield"
-
-    # Data write
-    save_path = "/media/sf_Virtual_Drive/Winter 2021/Wake Visualization/";
-    vtk_save_name = "delete_me";
-    
-    verbose = true;
-    circular = true;
-
-    # Length of each side of fluid grid
-    dimensions = [2,2,2];
-
-    # Number of divisions per dimension. [4,4,4] would be (4+1)=5 divisions per dimension, and (4+1)^3 probes. 
-    divisions = [1,1,1];
-
-    # Center of fluid domain grid. 
-    center = [4.0,0.0,0.0];
-
-    # Center about which craft flies around. 
-    rotation_center = [0.0,0.0,0.0];
-
-    # Velocity of windcraft flying in circle. 
-    v = 10;
-
-    # Total time simulation simulates. 
-    t_total = 1.0;
-        
-    create_iso(;
-        file_start=file_start,
-        file_end=file_end,
-        freestream=freestream,
-        data_path=data_path,
-        pfield_file_name=pfield_file_name,
-        save_path=save_path,
-        vtk_save_name=vtk_save_name,
-        verbose = verbose,
-        circular = circular,
-        center=center,
-        dimensions=dimensions,
-        v=v,
-        divisions=divisions,
-        t_total=t_total,
-        rotation_center=rotation_center
-        ) 
-end
-
-
-
 function windcraft_pylon_circle()
     # File start and stop
     file_start=1;
@@ -279,7 +219,7 @@ function windcraft_pylon_circle()
     divisions = [1,1,1];
 
     # Center of fluid domain grid at start of simulation. 
-    center = [0.0, 11.0, 0.0];
+    center = [0.0, 0.0, 0.0];
     
  
     # Center about which craft flies around. 
