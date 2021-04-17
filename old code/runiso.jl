@@ -1,4 +1,4 @@
-include("Isosurface_multiple.jl")
+include("isosurface.jl")
 
 function local_isosurface()
     # File start and stop
@@ -17,12 +17,11 @@ function local_isosurface()
 
     # Data write
     save_path = "/media/sf_Virtual_Drive/Winter 2021/Wake Visualization/";
-    pfield_save_name = "delete_me";
     vtk_save_name = "delete_me";
     
     verbose = true;
         
-    iterate_iso(
+    create_iso(
         file_start=file_start,
         file_end=file_end,
         bounds=bounds,
@@ -30,7 +29,6 @@ function local_isosurface()
         data_path=data_path,
         pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = verbose
         ) 
@@ -59,7 +57,6 @@ function turbine_validation_isosurface()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/turbine validation/";
-    pfield_save_name = "turbine_validation20";
     vtk_save_name = "turbine_validation20";
 
     verbose = true;
@@ -70,9 +67,7 @@ function turbine_validation_isosurface()
         bounds=bounds,
         freestream=freestream,
         data_path=data_path,
-        pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = true
         ) 
@@ -97,7 +92,6 @@ function straight_path_isosurface()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/straight path/";
-    pfield_save_name = "straight_path";
     vtk_save_name = "straight_path";
 
     verbose = true;
@@ -108,9 +102,7 @@ function straight_path_isosurface()
         bounds=bounds,
         freestream=freestream,
         data_path=data_path,
-        pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = verbose
         ) 
@@ -135,7 +127,6 @@ function single_rotor_isosurface()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/single rotor/";
-    pfield_save_name = "single_rotor";
     vtk_save_name = "single_rotor";
 
     verbose = true;
@@ -148,7 +139,6 @@ function single_rotor_isosurface()
         data_path=data_path,
         pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = verbose
         ) 
@@ -171,7 +161,6 @@ function phantom_hover_isosurface()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/phantom hover/";
-    pfield_save_name = "phantom_fast";
     vtk_save_name = "phantom_fast";
 
     verbose = true;
@@ -184,7 +173,6 @@ function phantom_hover_isosurface()
         data_path=data_path,
         pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = verbose
         ) 
@@ -207,7 +195,6 @@ function phantom_flight_isosurface()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/phantom flight/";
-    pfield_save_name = "phantom";
     vtk_save_name = "phantom";
         
     verbose = true;
@@ -220,7 +207,6 @@ function phantom_flight_isosurface()
         data_path=data_path,
         pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = verbose
         ) 
@@ -243,7 +229,6 @@ function turbine_10()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/turbine 10/";
-    pfield_save_name = "turbine_10_fast";
     vtk_save_name = "turbine_10_fast";
     
     verbose = true;
@@ -256,15 +241,11 @@ function turbine_10()
         data_path=data_path,
         pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = verbose
         ) 
 
 end
-
-
-
 
 function windcraft_pylon()
     # File start and stop
@@ -282,7 +263,6 @@ function windcraft_pylon()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/windcraft_pylons_circle/";
-    pfield_save_name = "deleteme";
     vtk_save_name = "wind_4_pylon";
 
     verbose = true;
@@ -295,11 +275,43 @@ function windcraft_pylon()
         data_path=data_path,
         pfield_file_name=pfield_file_name,
         save_path=save_path,
-        pfield_save_name=pfield_save_name,
         vtk_save_name=vtk_save_name,
         verbose = verbose
         )
 
 end
 
-windcraft_pylon()
+function windcraft_pylon_circle()
+    # File start and stop
+    file_start=0;
+    file_end=100;
+
+    # Define bounds
+    # We stay constant in x during this simulation. 
+    bounds=[[-2.0,-2.0,-2.75],[2.0,2.0,2.75],[1,1,1]];
+    # Define freestream
+    freestream = [0.0,0.0,0.0];
+
+    # Data read
+    data_path="/media/flowlab/Storage/jmehr/simulations/4Rotor_straight_path_test_withpylons/";
+    pfield_file_name = "sim_pfield"
+
+    # Data write
+    save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/windcraft_pylons_circle/";
+    vtk_save_name = "wind_4_pylon";
+
+    verbose = true;
+
+    iterate_iso(
+        file_start=file_start,
+        file_end=file_end,
+        bounds=bounds,
+        freestream=freestream,
+        data_path=data_path,
+        pfield_file_name=pfield_file_name,
+        save_path=save_path,
+        vtk_save_name=vtk_save_name,
+        verbose = verbose
+        )
+
+end
