@@ -58,13 +58,12 @@ function windcraft_pylon_circle()
     vtk_save_name = "wind_4_pylon_circle_double_check";
 
     verbose = true;
-    circular = true;
 
     # Length of each side of fluid grid
     dimensions = [5,5,5];
 
     # Number of divisions per dimension. [4,4,4] would be (4+1)=5 divisions per dimension, and (4+1)^3 probes. 
-    divisions = [10,10,10];
+    divisions = [1,1,1];
 
     # Center of fluid domain grid at start of simulation. 
     center = [0.0, 1.0, 0.0];
@@ -79,7 +78,7 @@ function windcraft_pylon_circle()
     # Total time simulation simulates. 
     t_total = 8.0;
 
-    create_iso(
+    create_iso_circular(
         file_start=file_start,
         file_end=file_end,
         freestream=freestream,
@@ -88,7 +87,6 @@ function windcraft_pylon_circle()
         save_path=save_path,
         vtk_save_name=vtk_save_name,
         verbose = verbose,
-        circular = circular,
         center=center,
         dimensions=dimensions,
         v_vehicle=v_vehicle,
@@ -141,5 +139,4 @@ function local_isosurface()
         ) 
 end
 
-windcraft_pylon()
 windcraft_pylon_circle()
