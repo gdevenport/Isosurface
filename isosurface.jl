@@ -288,7 +288,7 @@ function windcraft_pylon_circle()
     v = 1;
 
     # Total time simulation simulates. 
-    t_total = 9.0;
+    t_total = 8.0;
 
     create_iso(
         file_start=file_start,
