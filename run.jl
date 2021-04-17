@@ -26,7 +26,7 @@ function windcraft_pylon()
     center = [0.0,0.0,0.0]
 
 
-    create_iso_stationary(
+    create_iso_stationary(;
         file_start=file_start,
         file_end=file_end,
         freestream=freestream,
@@ -50,7 +50,7 @@ function windcraft_pylon_circle()
     freestream = [0.0,0.0,0.0];
 
     # Data read
-    data_path="/media/flowlab/Storage/jmehr/simulations/4Rotor_straight_path_test_withpylons/";
+    data_path="/media/flowlab/Storage/jmehr/simulations/4Rotor_circle_path_monitor_test/";
     pfield_file_name = "sim_pfield"
 
     # Data write
@@ -73,12 +73,12 @@ function windcraft_pylon_circle()
     rotation_center = [0.0,0.0,-60.0];
 
     # Velocity of windcraft flying in circle. 
-    v_vehicle = 1;
+    v_vehicle = 1.0;
 
     # Total time simulation simulates. 
     t_total = 8.0;
 
-    create_iso_circular(
+    create_iso_circular(;
         file_start=file_start,
         file_end=file_end,
         freestream=freestream,
@@ -118,25 +118,34 @@ function local_isosurface()
     # Length of each side of fluid grid
     dimensions = [2,2,2];
 
+    v_vehicle = 1.0;
+
+    t_total = 8.0;
+
+    rotation_center = [0.0,0.0,0.0]
+
     # Number of divisions per dimension. [4,4,4] would be (4+1)=5 divisions per dimension, and (4+1)^3 probes. 
     divisions = [1,1,1];
 
     # Center of fluid domain grid. 
-    center = [4.0,0.0,0.0];
+    center = [0.0,0.0,4.0];
 
-    create_iso_stationary(;
-        file_start=file_start,
-        file_end=file_end,
-        freestream=freestream,
-        data_path=data_path,
-        pfield_file_name=pfield_file_name,
-        save_path=save_path,
-        vtk_save_name=vtk_save_name,
-        verbose = verbose,
-        center=center,
-        dimensions=dimensions,
-        divisions=divisions,
-        ) 
+    create_iso_circular(;
+    file_start=file_start,
+    file_end=file_end,
+    freestream=freestream,
+    data_path=data_path,
+    pfield_file_name=pfield_file_name,
+    save_path=save_path,
+    vtk_save_name=vtk_save_name,
+    verbose = verbose,
+    center=center,
+    dimensions=dimensions,
+    v_vehicle=v_vehicle,
+    divisions=divisions,
+    t_total=t_total,
+    rotation_center=rotation_center
+    )
 end
 
 windcraft_pylon_circle()

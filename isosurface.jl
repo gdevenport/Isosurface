@@ -137,7 +137,6 @@ function create_iso_stationary(;
 end
 
 
-
 """
     create_iso_circular(file_start, file_end, freestream, data_path, pfield_file_name, save_path, vtk_save_name, verbose, 
     circular, center, dimensions, v, divisions, t_total, rotation_center)
@@ -199,6 +198,9 @@ function create_iso_circular(;
             #--------------------------------------------------------Define parameters for circular path----------------------------------------
             # This is the real time used to ensure the circular path of the fluid domain matches the circular path of the vehicle in the simulation. 
             t = i*(t_total/n_steps) 
+
+            println(r)
+            println(t*v_vehicle/r)
 
             # So far this only works for a circular path in a plane (x/y, x/z, y/z) and not in three dimensions. 
             # Change z1, z2, y1, y2 to the appropriate variables so the circular path is in the desired plane. 
