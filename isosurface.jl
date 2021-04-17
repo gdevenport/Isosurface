@@ -273,7 +273,7 @@ function windcraft_pylon_circle()
     circular = true;
 
     # Length of each side of fluid grid
-    dimensions = [2,2,2];
+    dimensions = [4,4,4];
 
     # Number of divisions per dimension. [4,4,4] would be (4+1)=5 divisions per dimension, and (4+1)^3 probes. 
     divisions = [1,1,1];
@@ -288,7 +288,7 @@ function windcraft_pylon_circle()
     v = 1;
 
     # Total time simulation simulates. 
-    t_total = 10.0;
+    t_total = 9.0;
 
     create_iso(
         file_start=file_start,
