@@ -1,8 +1,7 @@
 # Isosurface Creation
 # Author: Greg Devenport
 # Date: February 19, 2021
-# This code creates the files necessary for isosurface creation in Para View.
-using HDF5
+# This code creates the files necessary for isosurface creation in Para View. Velocity and vorticity are calulated on a defined grid. 
 using GeometricTools
 using LinearAlgebra
 using FLOWVPM
@@ -10,7 +9,6 @@ using FLOWVPM
 vpm = FLOWVPM;
 gt = GeometricTools;
 UJ = vpm.UJ_direct
-
 
 """
     create_iso_circular(file_start, file_end, freestream, data_path, pfield_file_name, save_path, vtk_save_name, verbose, 
@@ -30,7 +28,7 @@ UJ = vpm.UJ_direct
     'center' a vector of the origin of the fluid domain.
     'dimensions' a vector specifying the x,y,z dimensions of the fluid domain.
     'v' is the velocity of the craft.
-    'divisions' a vector specifying the number of divisions in the x,y,z planes. 
+    'divisions' a vector specifying the number of divisions in the fluid domain in the x,y,z planes. 
     't_total' the total time the simulation ran for.
     'rotation_center' a vector specifying the point around which the vehicle moves about. 
 """
@@ -45,43 +43,52 @@ function create_iso_circular(;
     verbose=verbose,
     center=center,
     dimensions=dimensions,
-    v=v,
+    v_vehicle=v_vehicle,
     divisions=divisions,
     t_total=t_total,
     rotation_center=rotation_center
     )
+    #-------------------------------------------------------Initial calculations for circular path--------------------------------------
+    #####
+    # All circular path code is fairly new and may have issues. Initial results seem correct however. 
+    #####
 
+    # Extract the length of each side of the fluid domain. 
     x_length = dimensions[1];
     y_length = dimensions[2];
     z_length = dimensions[3];
 
-    # Change this if circlular path is in a different plane. 
+    # Change this if circlular path is in a different plane. This is currently set for y/z plane.
     r = sqrt((center[2]-rotation_center[2])^2 + (center[3]-rotation_center[3])^2);
 
+    # Calculate the total number of steps, most likely the same as file_end. 
     n_steps = file_end - file_start;
 
     @time begin
         for i in file_start:file_end
 
+            #--------------------------------------------------------Define parameters for circular path----------------------------------------
+            # This is the real time used to ensure the circular path of the fluid domain matches the circular path of the vehicle in the simulation. 
+            t = i*(t_total/n_steps) 
+
+            # So far this only works for a circular path in a plane (x/y, x/z, y/z) and not in three dimensions. 
+            # Change z1, z2, y1, y2 to the appropriate variables so the circular path is in the desired plane. 
+            z1 = rotation_center[3] + r*cos(t*v_vehicle/r) - z_length/2 + center[3];
+            z2 = rotation_center[3] + r*cos(t*v_vehicle/r) + z_length/2 + center[3];
+            y1 = rotation_center[2] + r*sin(t*v_vehicle/r) + y_length/2 + center[2];
+            y2 = rotation_center[2] + r*sin(t*v_vehicle/r) - y_length/2 + center[2];
+
+            # These are constant during the circular path. 
+            x1 = rotation_center[1] - x_length/2 + center[1];
+            x2 = rotation_center[1] + x_length/2 + center[1];
+
+            # Define the bounds of the fluid domain.
+            circle_path_coordinates = [[min(x1,x2),min(y1,y2),min(z1,z2)],[max(x1,x2),max(y1,y2),max(z1,z2)]]
+                
             # --------------------------------------------------------Create Fluid Domain------------------------------------------------------
             # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
             # The number of nodes for this grid will be (nx+1)*(ny+1)*(nz+1)
             
-          
-
-            t = i*(t_total/n_steps) # This is the real time. 
-
-            # So far this only works for a circular path in a plane (x/y, x/z, y/z) and not in three dimensions. 
-            # Change x1, x2, y1, y2 to the appropriate variables so the circular path is in the desired plane. 
-            z1 = rotation_center[3] + r*cos(t*v/r) - z_length/2 + center[3];
-            z2 = rotation_center[3] + r*cos(t*v/r) + z_length/2 + center[3];
-            y1 = rotation_center[2] + r*sin(t*v/r) + y_length/2 + center[2];
-            y2 = rotation_center[2] + r*sin(t*v/r) - y_length/2 + center[2];
-            x1 = rotation_center[1] - x_length/2 + center[1];
-            x2 = rotation_center[1] + x_length/2 + center[1];
-
-            circle_path_coordinates = [[min(x1,x2),min(y1,y2),min(z1,z2)],[max(x1,x2),max(y1,y2),max(z1,z2)]]
-                
             fdom = gt.Grid(circle_path_coordinates[1],circle_path_coordinates[2],convert(Array{Int64,1}, divisions))
 
             # Print file number code is running on. 
@@ -111,35 +118,31 @@ function create_iso_circular(;
             end
         
             # --------------------------------------------------------Calculate Vorticity and Velocity------------------------------------------
-            #The pfield must be reset each iteration so that the velocities do not continue to add on top of eachother. 
             if verbose println("Calculating vorticity and velocity..."); println("\t Resetting particle field...") end
-                
-
+            
+            # The pfield must be reset each iteration so that the velocities do not continue to add on top of eachother. 
             vpm._reset_particles(pfield_for_fluid_domain)
             vpm._reset_particles(pfield_from_h5_file)
 
-
             if verbose println("\t Calculating particle on particle interations...") end
 
+            # Calculate the particle on particle interations. 
             UJ(pfield_from_h5_file,pfield_for_fluid_domain)
 
             if verbose println("\t Calculating velocity...") end
 
+            # Extract the velocity at each node on the fluid grid. 
             Us = [vpm.get_U(P)+freestream for P in vpm.iterate(pfield_for_fluid_domain)]
 
             if verbose println("\t Calculating vorticity...\n") end
 
-            Ws = [vpm.get_W(P) for P in vpm.iterate(pfield_for_fluid_domain)]
-            
-            #zeta(pfield)
-            #omegaapproxs = [[P.Jexa[1], P.Jexa[2], P.Jexa[3]] for P in vpm.iterate(pfield)][1:fdom.nnodes]
-            
+            # Extract the vorticity at each node on the fluid grid. 
+            Ws = [vpm.get_W(P) for P in vpm.iterate(pfield_for_fluid_domain)]            
 
             # --------------------------------------------------------Add Solutions to Fluid Domain--------------------------------------------- 
             # Add the velocity (Us) and vorticity (Ws) data to the fluid domain.
             gt.add_field(fdom, "U", "vector", Us, "node")
             gt.add_field(fdom, "W", "vector", Ws, "node")
-            #gt.add_field(fdom, "omegaapproxs", "vector", omegaapproxs, "node")
             
             # Generate the file number to match the input h5 file. Output in .%4d format (0001, 0010, 0100, 1000).
             if i < 10
@@ -152,13 +155,10 @@ function create_iso_circular(;
                 file_number = "$i";
             end
 
-
             # --------------------------------------------------------Save VTK Files-----------------------------------------------------------
             # Save the grid as a VTK file.
             gt.save(fdom,"$save_path$vtk_save_name";num=i)
             
-            # The variable 'iteration' pairs the original h5 file number with this output vtk file number so that
-            # the output files are kept in the same order as the input files.
         end
     end
 end
@@ -180,7 +180,7 @@ end
     'verbose' which is a bool, setting to true will cause many lines of text to be printed as you monitor the code progress.
     'center' a vector of the origin of the fluid domain.
     'dimensions' a vector specifying the x,y,z dimensions of the fluid domain.
-    'divisions' a vector specifying the number of divisions in the x,y,z planes. 
+    'divisions' a vector specifying the number of divisions in the fluid domain in the x,y,z planes. 
 """
 function create_iso_stationary(;
     file_start=file_start,
@@ -196,19 +196,17 @@ function create_iso_stationary(;
     divisions=divisions,
     )
 
+    #-------------------------------------------------------------------Extract initial parameters-------------------------------------------------    
+    # Extract the length of each side of the fluid domain. 
     x_length = dimensions[1];
     y_length = dimensions[2];
     z_length = dimensions[3];
 
-
     @time begin
         for i in file_start:file_end
-
             # --------------------------------------------------------Create Fluid Domain------------------------------------------------------
-            # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
-            # The number of nodes for this grid will be (nx+1)*(ny+1)*(nz+1)
             
-
+            # Define the two coordinates needed to define the fluid domain. 
             x1 = center[1] - x_length/2;
             x2 = center[1] + x_length/2;
             y1 = center[2] - y_length/2;
@@ -216,9 +214,9 @@ function create_iso_stationary(;
             z1 = center[3] + z_length/2;
             z2 = center[3] - z_length/2;
 
+            # Create fluid domain grid. divisions defines the number of nodes in the grid. 
             fdom = gt.Grid([min(x1,x2),min(y1,y2),min(z1,z2)],[max(x1,x2),max(y1,y2),max(z1,z2)],convert(Array{Int64,1}, divisions))
         
-
             # Print file number code is running on. 
             if verbose println("Creating Isosurface for file $i") end
 
@@ -246,35 +244,31 @@ function create_iso_stationary(;
             end
         
             # --------------------------------------------------------Calculate Vorticity and Velocity------------------------------------------
-            #The pfield must be reset each iteration so that the velocities do not continue to add on top of eachother. 
             if verbose println("Calculating vorticity and velocity..."); println("\t Resetting particle field...") end
-                
-
+            
+            # The pfield must be reset each iteration so that the velocities do not continue to add on top of eachother. 
             vpm._reset_particles(pfield_for_fluid_domain)
             vpm._reset_particles(pfield_from_h5_file)
 
-
             if verbose println("\t Calculating particle on particle interations...") end
 
+            # Calculate the particle on particle interations. 
             UJ(pfield_from_h5_file,pfield_for_fluid_domain)
 
             if verbose println("\t Calculating velocity...") end
 
+            # Extract the velocity at each node on the fluid grid. 
             Us = [vpm.get_U(P)+freestream for P in vpm.iterate(pfield_for_fluid_domain)]
 
             if verbose println("\t Calculating vorticity...\n") end
 
-            Ws = [vpm.get_W(P) for P in vpm.iterate(pfield_for_fluid_domain)]
-            
-            #zeta(pfield)
-            #omegaapproxs = [[P.Jexa[1], P.Jexa[2], P.Jexa[3]] for P in vpm.iterate(pfield)][1:fdom.nnodes]
-            
+            # Extract the vorticity at each node on the fluid grid. 
+            Ws = [vpm.get_W(P) for P in vpm.iterate(pfield_for_fluid_domain)]            
 
             # --------------------------------------------------------Add Solutions to Fluid Domain--------------------------------------------- 
             # Add the velocity (Us) and vorticity (Ws) data to the fluid domain.
             gt.add_field(fdom, "U", "vector", Us, "node")
             gt.add_field(fdom, "W", "vector", Ws, "node")
-            #gt.add_field(fdom, "omegaapproxs", "vector", omegaapproxs, "node")
             
             # Generate the file number to match the input h5 file. Output in .%4d format (0001, 0010, 0100, 1000).
             if i < 10
@@ -287,38 +281,10 @@ function create_iso_stationary(;
                 file_number = "$i";
             end
 
-
             # --------------------------------------------------------Save VTK Files-----------------------------------------------------------
             # Save the grid as a VTK file.
             gt.save(fdom,"$save_path$vtk_save_name";num=i)
             
-            # The variable 'iteration' pairs the original h5 file number with this output vtk file number so that
-            # the output files are kept in the same order as the input files.
         end
     end
-end
-
-
-"""
-    readh5(file_name, file_path)
-
-    Reads in an h5 file and extracts the Gamma, X (x,y,z position), and Sigma data. 
-    Returns the extracted data and the number of particles in the h5 file. 
-
-    return X, Gamma, Sigma, lengthX
-"""
-function readh5(file_name, file_path)
-    file = h5open("$file_path$file_name","r");
-
-    # We now extract the various groups, Gamma, X, sigma and extract the data from the various groups.
-    
-    # file["Gamma"] extracts the group Gamma. The read command reads in the data as an array.
-    gamma = read(file["Gamma"]);
-    position = read(file["X"]);
-    sigma = read(file["sigma"]);
-
-    # Calculate the length of the data set
-    len_data = size(position)[2];
-
-    return position, gamma, sigma, len_data
 end

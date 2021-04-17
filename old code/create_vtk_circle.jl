@@ -1,5 +1,5 @@
 save_path = "/media/sf_Virtual_Drive/Winter 2021/Wake Visualization/";
-vtk_save_name="gank_me";
+vtk_save_name="test_me";
 
 # Define the center of the grid.
 center = [4.0,0.0,0.0];

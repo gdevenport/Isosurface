@@ -1,4 +1,5 @@
 include("isosurface.jl")
+include("read_h5.jl")
 
 function windcraft_pylon()
     # File start and stop
@@ -73,7 +74,7 @@ function windcraft_pylon_circle()
     rotation_center = [0.0,0.0,-60.0];
 
     # Velocity of windcraft flying in circle. 
-    v = 1;
+    v_vehicle = 1;
 
     # Total time simulation simulates. 
     t_total = 8.0;
@@ -90,7 +91,7 @@ function windcraft_pylon_circle()
         circular = circular,
         center=center,
         dimensions=dimensions,
-        v=v,
+        v_vehicle=v_vehicle,
         divisions=divisions,
         t_total=t_total,
         rotation_center=rotation_center
@@ -102,8 +103,6 @@ function local_isosurface()
     # File start and stop
     file_start=9;
     file_end=12;
-
-    # Define bounds
 
     # Define freestream
     freestream = [-20.0,0.0,0.0];
@@ -127,15 +126,6 @@ function local_isosurface()
     # Center of fluid domain grid. 
     center = [4.0,0.0,0.0];
 
-    # Center about which craft flies around. 
-    rotation_center = [0.0,0.0,0.0];
-
-    # Velocity of windcraft flying in circle. 
-    v = 10;
-
-    # Total time simulation simulates. 
-    t_total = 1.0;
-
     create_iso_stationary(;
         file_start=file_start,
         file_end=file_end,
@@ -150,3 +140,5 @@ function local_isosurface()
         divisions=divisions,
         ) 
 end
+
+local_isosurface()

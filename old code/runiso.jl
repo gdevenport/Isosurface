@@ -1,4 +1,4 @@
-include("isosurface.jl")
+include("Isosurface_faster.jl")
 
 function local_isosurface()
     # File start and stop
