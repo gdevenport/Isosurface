@@ -65,12 +65,12 @@ function create_iso(;
 
                 # So far this only works for a circular path in a plane (x/y, x/z, y/z) and not in three dimensions. 
                 # Change x1, x2, y1, y2 to the appropriate variables so the circular path is in the desired plane. 
-                z1 = center[3] + r*cos(t*v/r) - z_length/2;
-                z2 = center[3] + r*cos(t*v/r) + z_length/2;
-                y1 = center[2] + r*sin(t*v/r) + y_length/2;
-                y2 = center[2] + r*sin(t*v/r) - y_length/2;
-                x1 = center[1] - x_length/2;
-                x2 = center[1] + x_length/2;
+                z1 = rotation_center[3] + r*cos(t*v/r) - z_length/2;
+                z2 = rotation_center[3] + r*cos(t*v/r) + z_length/2;
+                y1 = rotation_center[2] + r*sin(t*v/r) + y_length/2;
+                y2 = rotation_center[2] + r*sin(t*v/r) - y_length/2;
+                x1 = rotation_center[1] - x_length/2;
+                x2 = rotation_center[1] + x_length/2;
 
                 circle_path_coordinates = [[min(x1,x2),min(y1,y2),min(z1,z2)],[max(x1,x2),max(y1,y2),max(z1,z2)]]
                 
