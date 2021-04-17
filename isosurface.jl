@@ -285,7 +285,7 @@ function windcraft_pylon_circle()
     rotation_center = [0.0,0.0,-60.0];
 
     # Velocity of windcraft flying in circle. 
-    v = 10;
+    v = 1;
 
     # Total time simulation simulates. 
     t_total = 10.0;
