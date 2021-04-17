@@ -15,7 +15,7 @@ function windcraft_pylon()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/windcraft_pylons_circle/";
-    vtk_save_name = "wind_4_pylon";
+    vtk_save_name = "wind_4_pylon_double_check";
 
     verbose = true;
 
@@ -43,7 +43,7 @@ end
 
 function windcraft_pylon_circle()
     # File start and stop
-    file_start=1;
+    file_start=0;
     file_end=100;
 
     # Define freestream
@@ -55,7 +55,7 @@ function windcraft_pylon_circle()
 
     # Data write
     save_path = "/media/flowlab/Storage/gdevenport/simulations/isosurface/windcraft_pylons_circle/";
-    vtk_save_name = "wind_4_pylon_circle";
+    vtk_save_name = "wind_4_pylon_circle_double_check";
 
     verbose = true;
     circular = true;
@@ -141,4 +141,5 @@ function local_isosurface()
         ) 
 end
 
-local_isosurface()
+windcraft_pylon()
+windcraft_pylon_circle()
