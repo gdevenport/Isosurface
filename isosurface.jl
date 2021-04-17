@@ -279,8 +279,8 @@ function windcraft_pylon_circle()
     divisions = [1,1,1];
 
     # Center of fluid domain grid at start of simulation. 
-    center = [0.0,-1.0,0.0];
-
+    center = [0.0, 2.0, 0.0];
+ 
     # Center about which craft flies around. 
     rotation_center = [0.0,0.0,-60.0];
 
