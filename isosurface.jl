@@ -213,13 +213,13 @@ function windcraft_pylon_circle()
     circular = true;
 
     # Length of each side of fluid grid
-    dimensions = [4,4,4];
+    dimensions = [5,5,5];
 
     # Number of divisions per dimension. [4,4,4] would be (4+1)=5 divisions per dimension, and (4+1)^3 probes. 
-    divisions = [1,1,1];
+    divisions = [10,10,10];
 
     # Center of fluid domain grid at start of simulation. 
-    center = [0.0, 1.0, 1.0];
+    center = [0.0, 1.0, 0.0];
     
  
     # Center about which craft flies around. 
