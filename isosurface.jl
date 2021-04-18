@@ -43,17 +43,17 @@ function create_iso_stationary(;
     divisions=divisions,
     )
 
-    #-------------------------------------------------------------------Extract initial parameters-------------------------------------------------    
-    # Extract the length of each side of the fluid domain. 
-    x_length = dimensions[1];
-    y_length = dimensions[2];
-    z_length = dimensions[3];
-
     @time begin
+        #-------------------------------------------------------------------Extract initial parameters-------------------------------------------------    
+        # Extract the length of each side of the fluid domain. 
+        x_length = dimensions[1];
+        y_length = dimensions[2];
+        z_length = dimensions[3];
+
         for i in file_start:file_end
-            # --------------------------------------------------------Create Fluid Domain------------------------------------------------------
+            # --------------------------------------------------------------Create Fluid Domain------------------------------------------------------
             
-            # Define the two coordinates needed to define the fluid domain. 
+            # Define the two sets of coordinates needed to define the fluid domain. 
             x1 = center[1] - x_length/2;
             x2 = center[1] + x_length/2;
             y1 = center[2] - y_length/2;
@@ -61,29 +61,32 @@ function create_iso_stationary(;
             z1 = center[3] + z_length/2;
             z2 = center[3] - z_length/2;
 
-            # Create fluid domain grid. divisions defines the number of nodes in the grid. 
+            # Create fluid domain grid. 'divisions' defines the number of nodes in the grid. Number of nodes is (divisions[1]+1)*(divisions[2]+1)*(divisions[3])
             fdom = gt.Grid([min(x1,x2),min(y1,y2),min(z1,z2)],[max(x1,x2),max(y1,y2),max(z1,z2)],convert(Array{Int64,1}, divisions))
         
-            # Print file number code is running on. 
             if verbose println("Creating Isosurface for file $i") end
 
+            # Read in the pfield data from the h5 file. 
             X, Gamma, Sigma , lengthX = readh5("$pfield_file_name.$i.h5",data_path);
 
             if verbose println("Building particle field...number of particles: $lengthX") end
 
             # --------------------------------------------------------Create Particle Field----------------------------------------------------
-            # Initialize particle field. We will add the test probes and the particles from the h5 file.
+            # Initialize both particle fields.
+
+            # Pfield from h5 file is recreated here, it will be just as it was in the simulation. 
             pfield_from_h5_file = vpm.ParticleField(lengthX);
+
+            # Pfield with test particles corresponding to the nodes of the fluid domain. 
             pfield_for_fluid_domain = vpm.ParticleField(fdom.nnodes + 1);
 
-            # Add probes to the particle field at the nodes of the grid.
-            # add_particle(pfield, [x,y,z], Gamma, Sigma)
+            # Add probes to the particle field at the nodes of the grid. Use small values of gamma and sigma. 
             for i in 1:fdom.nnodes
                 Xprobe = gt.get_node(fdom, i)
                 vpm.add_particle(pfield_for_fluid_domain, Xprobe, 1e-10*ones(3), 0.01)
             end
 
-            # Now add the particles to the particle field with the probes, based on the data read in from the h5 file.
+            # Recreate the pfield from the simulation. 
             # It should be noted that the [x,y,z] data are arranged with x,y,z as rows and the various particles as columns.
             # The same is true of the Gamma data. 
             for i in 1:lengthX
@@ -93,7 +96,7 @@ function create_iso_stationary(;
             # --------------------------------------------------------Calculate Vorticity and Velocity------------------------------------------
             if verbose println("Calculating vorticity and velocity..."); println("\t Resetting particle field...") end
             
-            # The pfield must be reset each iteration so that the velocities do not continue to add on top of eachother. 
+            # The pfields must be reset each iteration so that the velocities do not continue to add on top of eachother. 
             vpm._reset_particles(pfield_for_fluid_domain)
             vpm._reset_particles(pfield_from_h5_file)
 
@@ -180,27 +183,24 @@ function create_iso_circular(;
     #####
     # All circular path code is fairly new and may have issues. Initial results seem correct however. 
     #####
-
-    # Extract the length of each side of the fluid domain. 
-    x_length = dimensions[1];
-    y_length = dimensions[2];
-    z_length = dimensions[3];
-
-    # Change this if circlular path is in a different plane. This is currently set for y/z plane.
-    r = sqrt((center[2]-rotation_center[2])^2 + (center[3]-rotation_center[3])^2);
-
-    # Calculate the total number of steps, most likely the same as file_end. 
-    n_steps = file_end - file_start;
-
     @time begin
+        # Extract the length of each side of the fluid domain. 
+        x_length = dimensions[1];
+        y_length = dimensions[2];
+        z_length = dimensions[3];
+
+        # Change this if circlular path is in a different plane. This is currently set for y/z plane.
+        r = sqrt((center[2]-rotation_center[2])^2 + (center[3]-rotation_center[3])^2);
+
+        # Calculate the total number of steps, most likely the same as file_end. 
+        n_steps = file_end - file_start;
+
+    
         for i in file_start:file_end
 
             #--------------------------------------------------------Define parameters for circular path----------------------------------------
             # This is the real time used to ensure the circular path of the fluid domain matches the circular path of the vehicle in the simulation. 
             t = i*(t_total/n_steps) 
-
-            println(r)
-            println(t*v_vehicle/r)
 
             # So far this only works for a circular path in a plane (x/y, x/z, y/z) and not in three dimensions. 
             # Change z1, z2, y1, y2 to the appropriate variables so the circular path is in the desired plane. 
@@ -217,9 +217,7 @@ function create_iso_circular(;
             circle_path_coordinates = [[min(x1,x2),min(y1,y2),min(z1,z2)],[max(x1,x2),max(y1,y2),max(z1,z2)]]
                 
             # --------------------------------------------------------Create Fluid Domain------------------------------------------------------
-            # Create fluid domain grid. Grid([x,y,z lower bounds],[x,y,z upper bounds],[nx,ny,nz number of divisions for each coordinate])
-            # The number of nodes for this grid will be (nx+1)*(ny+1)*(nz+1)
-            
+            # Create fluid domain grid. 'divisions' defines the number of nodes in the grid. Number of nodes is (divisions[1]+1)*(divisions[2]+1)*(divisions[3])
             fdom = gt.Grid(circle_path_coordinates[1],circle_path_coordinates[2],convert(Array{Int64,1}, divisions))
 
             # Print file number code is running on. 
@@ -230,18 +228,21 @@ function create_iso_circular(;
             if verbose println("Building particle field...number of particles: $lengthX") end
 
             # --------------------------------------------------------Create Particle Field----------------------------------------------------
-            # Initialize particle field. We will add the test probes and the particles from the h5 file.
+            # Initialize both particle fields.
+
+            # Pfield from h5 file is recreated here, it will be just as it was in the simulation. 
             pfield_from_h5_file = vpm.ParticleField(lengthX);
+
+            # Pfield with test particles corresponding to the nodes of the fluid domain. 
             pfield_for_fluid_domain = vpm.ParticleField(fdom.nnodes + 1);
 
-            # Add probes to the particle field at the nodes of the grid.
-            # add_particle(pfield, [x,y,z], Gamma, Sigma)
+            # Add probes to the particle field at the nodes of the grid. Use small values of gamma and sigma. 
             for i in 1:fdom.nnodes
                 Xprobe = gt.get_node(fdom, i)
                 vpm.add_particle(pfield_for_fluid_domain, Xprobe, 1e-10*ones(3), 0.01)
             end
 
-            # Now add the particles to the particle field with the probes, based on the data read in from the h5 file.
+            # Recreate the pfield from the simulation. 
             # It should be noted that the [x,y,z] data are arranged with x,y,z as rows and the various particles as columns.
             # The same is true of the Gamma data. 
             for i in 1:lengthX
@@ -251,7 +252,7 @@ function create_iso_circular(;
             # --------------------------------------------------------Calculate Vorticity and Velocity------------------------------------------
             if verbose println("Calculating vorticity and velocity..."); println("\t Resetting particle field...") end
             
-            # The pfield must be reset each iteration so that the velocities do not continue to add on top of eachother. 
+            # The pfields must be reset each iteration so that the velocities do not continue to add on top of eachother. 
             vpm._reset_particles(pfield_for_fluid_domain)
             vpm._reset_particles(pfield_from_h5_file)
 
@@ -289,7 +290,6 @@ function create_iso_circular(;
             # --------------------------------------------------------Save VTK Files-----------------------------------------------------------
             # Save the grid as a VTK file.
             gt.save(fdom,"$save_path$vtk_save_name";num=i)
-            
         end
     end
 end
