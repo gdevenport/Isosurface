@@ -1,8 +1,7 @@
-# Isosurface
-This is my code that will read in h5 files and create vtk files to be read by paraview. This code calculates velocity and vorticity. Old pieces of code are found in **old code**. A recent update added the ability for the location of isosurface creation to change in time. This is helpful for the case of a moving aircraft, such as viewing the velocity field around the propellers. 
+This code will read in h5 files created by FLOW Unsteady and create vtk files containing velocity and vorticity information to visualize in ParaView. 
 
-Here are a few samples of what the code can do.\
-**Velocity slice showing velocity profile of wake behind turbine**
+Here are a few examples of what the code can do.\
+**Slice showing velocity profile behind turbine**
 ![alt-text](https://github.com/gdevenport/Isosurface/blob/main/media/front_side.gif)
 
 **Velocity behind windcraft turbine blades**
@@ -10,3 +9,6 @@ Here are a few samples of what the code can do.\
 
 **Vorticity isosurfaces of a stationary propeller**
 ![alt-text](https://github.com/gdevenport/Isosurface/blob/main/media/tips_tubes_vorticity.gif)
+
+**Velocity slice moving with windcraft in a circular path**
+![alt-text](https://github.com/gdevenport/Isosurface/blob/main/media/rotate_slice.gif)

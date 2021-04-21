@@ -1,18 +1,22 @@
 # Isosurface Creation
 # Author: Greg Devenport
 # Date: February 19, 2021
-# This code creates the files necessary for isosurface creation in Para View. Velocity and vorticity are calulated on a defined grid. 
+# This code creates the files necessary for isosurface creation and velocity visualization in ParaView.
+
 using GeometricTools
 using LinearAlgebra
 using FLOWVPM
 
 vpm = FLOWVPM;
 gt = GeometricTools;
-UJ = vpm.UJ_direct
+UJ = vpm.UJ_direct;
+
+# Use create_iso_stationary for stationary case.
+# Use create_iso_circular for curved path case.
+# Straight path case to be added in the future.  
 
 """
-    create_iso_stationary(file_start, file_end, freestream, data_path, pfield_file_name, save_path, vtk_save_name, verbose, 
-    circular, center, dimensions, v, divisions, t_total, rotation_center)
+    create_iso_stationary(file_start, file_end, freestream, data_path, pfield_file_name, save_path, vtk_save_name, verbose, center, dimensions, divisions)
 
     For use when vehicle is stationary (turbines, propeller in hover, etc.)
     Inputs are
@@ -142,7 +146,7 @@ end
 
 """
     create_iso_circular(file_start, file_end, freestream, data_path, pfield_file_name, save_path, vtk_save_name, verbose, 
-    circular, center, dimensions, v, divisions, t_total, rotation_center)
+    circular, center, dimensions, v_vehicle, divisions, t_total, rotation_center)
 
     For use when vehicle moves in circular path (windcraft, etc.)
     Inputs are
@@ -158,7 +162,7 @@ end
     'circular' a bool set to true if the simulation involves a circular path.
     'center' a vector of the origin of the fluid domain.
     'dimensions' a vector specifying the x,y,z dimensions of the fluid domain.
-    'v' is the velocity of the craft.
+    'v_vehicle' is the velocity of the vehicle.
     'divisions' a vector specifying the number of divisions in the fluid domain in the x,y,z planes. 
     't_total' the total time the simulation ran for.
     'rotation_center' a vector specifying the point around which the vehicle moves about. 
